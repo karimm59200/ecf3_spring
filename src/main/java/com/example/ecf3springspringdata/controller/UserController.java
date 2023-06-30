@@ -1,13 +1,13 @@
 package com.example.ecf3springspringdata.controller;
 
+import com.example.ecf3springspringdata.exception.UserExistException;
+import com.example.ecf3springspringdata.exception.UserNotExistException;
+import com.example.ecf3springspringdata.service.LoginService;
 import com.example.ecf3springspringdata.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -18,6 +18,9 @@ public class UserController {
     private UserService userService;
 
     @Autowired
+    private LoginService loginService;
+
+    @Autowired
     private HttpServletResponse response;
 
     @GetMapping("/form-sign-up")
@@ -26,10 +29,8 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public String signUp(@RequestParam (name = "name")  String name,
-                         @RequestParam  String password,
-                         @RequestParam  String email ) {
-        if (userService.signUp(name, password, email)) {
+    public String postsignUp(@RequestParam String name, @RequestParam String email, @RequestParam String password) throws UserExistException {
+        if (userService.signUp(name, email, password)) {
             return "redirect:/user/sign-in";
         }
         return null;
@@ -41,13 +42,19 @@ public class UserController {
         return mv;
     }
 
-    @PostMapping("/post-sign-in")
-    public String postSignIn(@RequestParam String name, @RequestParam String password) {
-        if (userService.signIn(name, password)) {
+    @GetMapping("/home")
+    public ModelAndView home() {
+        ModelAndView mv = new ModelAndView("home");
+        return mv;
+    }
+
+    @PostMapping("/sign-in")
+    public String singIn(@RequestParam String email, @RequestParam String password) throws UserNotExistException {
+        if (userService.signIn(email, password)) {
+            System.out.println(email + " " + password);
             return "redirect:/user/home";
         }
         return null;
     }
-
 
 }

@@ -11,4 +11,6 @@ public interface LoginService {
 
     public int getUserId();
 
+    public String getName();
+
 }

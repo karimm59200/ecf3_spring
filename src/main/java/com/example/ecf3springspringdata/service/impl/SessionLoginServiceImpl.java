@@ -37,5 +37,12 @@ public class SessionLoginServiceImpl implements LoginService {
         return (int)httpSession.getAttribute("userId");
     }
 
+    @Override
+    public String getName() {
+
+        return (String)httpSession.getAttribute("Name");
+
+    }
+
 
 }
